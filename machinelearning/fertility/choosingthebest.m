@@ -1,19 +1,27 @@
-function [val] = choosingthebest(X, y, Xval, yval, opt)
+function [layer1 layer2] = choosingthebest (X, y)
 
-l = 0; r = 5;
-for i = 1 : opt
-    mid1 = l + (r - l) / 3;
-    mid2 = r - (r - l) / 3;
-    theta1 = training(X, y, mid1);
-    theta2 = training(X, y, mid2);
-    f1 = nnCostFunction(theta1, size(X, 2), 8, 4, 2, Xval, yval, 0);
-    f2 = nnCostFunction(theta2, size(X, 2), 8, 4, 2, Xval, yval, 0);
-    if(f1 <= f2)
-        val = mid2;
-        r = mid2;
-    else
-        val = mid1;
-        l = mid1;
+best_val = 0;
+
+for i = 1 : 11
+    for j = 1 : i
+        Theta1 = randInitializeWeights(size(X, 2), i);
+        Theta2 = randInitializeWeights(i, j);
+        Theta3 = randInitializeWeights(j, 2);
+        initial_nn_params = [Theta1(:) ; Theta2(:); Theta3(:)];
+        temp = training(initial_nn_params, X, y, i, j, 0);
+        val = nnCostFunction(temp, size(X, 2), i, j, 2, X, y, 0);
+        if(best_val==0)
+              best_val = val;
+              layer1 = i;
+              layer2 = j;
+        else 
+           if(best_val > val)
+               best_val = val;
+               layer1 = i;
+               layer2 = j;
+           end
+        end
     end
 end
 
+endfunction

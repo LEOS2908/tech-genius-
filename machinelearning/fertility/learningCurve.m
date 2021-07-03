@@ -1,5 +1,5 @@
 function [error_train, error_val] = ...
-    learningCurve(X, y, Xval, yval, lambda)
+    learningCurve(params, X, y, Xval, yval, hidden_layer, hidden_layer_1, lambda)
 %LEARNINGCURVE Generates the train and cross validation set errors needed 
 %to plot a learning curve
 %   [error_train, error_val] = ...
@@ -55,11 +55,14 @@ error_val   = zeros(m, 1);
 
 
 for i = 1 : m
-    nn_params =  training(X(1:i, :), y(1:i), lambda);
-    error_train(i) = nnCostFunction(nn_params, size(X, 2), 8, 4, 2, X(1:i, :), 
-                                y(1:i), 0);
-    error_val(i) = nnCostFunction(nn_params, size(Xval, 2), 8,4, 2, Xval, 
-                        yval, 0);
+    nn_params =  training(params, X(1:i, :), y(1:i), hidden_layer, hidden_layer_1, ...
+                                        lambda);
+    error_train(i) = nnCostFunction(nn_params, size(X, 2), hidden_layer, ...
+                                            hidden_layer_1, 2, X(1:i, :), ...
+                                                 y(1:i), 0);
+    error_val(i) = nnCostFunction(nn_params, size(Xval, 2), hidden_layer, ...
+                                        hidden_layer_1, 2, Xval, ...
+                                                  yval, 0);
 end
 
 
